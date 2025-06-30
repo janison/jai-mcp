@@ -1,0 +1,101 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jai-mcp"
+version = "0.1.0"
+description = "MCP server and gateway for managing Jai platform resources through Claude Code"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Janison", email = "dev@janison.com"},
+]
+keywords = ["mcp", "jai", "claude", "ai", "platform", "gcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    # Core MCP dependencies
+    "fastmcp>=2.0.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    
+    # Authentication & Security
+    "cryptography>=41.0.0",
+    "pyjwt>=2.8.0",
+]
+
+[project.optional-dependencies]
+# Development tools
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pytest-httpx>=0.22.0",
+]
+
+# MCP-API Gateway (deployed to GCP)
+gateway = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "google-cloud-logging>=3.5.0",
+    "google-cloud-secret-manager>=2.16.0",
+    "google-cloud-firestore>=2.11.0",
+    "redis>=5.0.0",
+    "slowapi>=0.1.8",  # Rate limiting
+]
+
+# Full installation (both components)
+all = [
+    "jai-mcp[gateway]",
+]
+
+[project.scripts]
+# Local MCP server (runs on developer machine)
+jai-mcp = "jai_mcp.server:main"
+
+# Gateway management commands
+jai-mcp-gateway = "jai_mcp.gateway.main:main"
+jai-mcp-gateway-deploy = "jai_mcp.gateway.deploy:main"
+
+[project.urls]
+Homepage = "https://github.com/janison/jai-mcp"
+Issues = "https://github.com/janison/jai-mcp/issues"
+Documentation = "https://github.com/janison/jai-mcp/wiki"
+
+[tool.hatch.version]
+path = "jai_mcp/__version__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jai_mcp"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

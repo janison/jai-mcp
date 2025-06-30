@@ -1,0 +1,1 @@
+"""Jai MCP - MCP server for managing Jai platform resources."""
